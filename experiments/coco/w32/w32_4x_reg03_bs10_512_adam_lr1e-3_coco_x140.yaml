@@ -1,0 +1,173 @@
+AUTO_RESUME: True
+DATA_DIR: ''
+GPUS: (0,)
+LOG_DIR: log
+OUTPUT_DIR: output
+PRINT_FREQ: 100
+VERBOSE: False
+CUDNN:
+  BENCHMARK: True
+  DETERMINISTIC: False
+  ENABLED: True
+DATASET:
+  DATASET: coco_kpt
+  DATASET_TEST: coco
+  DATA_FORMAT: zip
+  FLIP: 0.5
+  INPUT_SIZE: 512
+  OUTPUT_SIZE: 128
+  MAX_NUM_PEOPLE: 30
+  MAX_ROTATION: 30
+  MAX_SCALE: 1.5
+  SCALE_TYPE: 'short'
+  MAX_TRANSLATE: 40
+  MIN_SCALE: 0.75
+  NUM_JOINTS: 17
+  ROOT: 'data/COCO'
+  TEST: val2017
+  TRAIN: train2017
+  # center:4*2 kp: 2*2
+  OFFSET_RADIUS: 2
+  SIGMA: 2.0
+  CENTER_SIGMA: 2.0
+  BG_WEIGHT: 0.1
+LOSS:
+  HEATMAPS_LOSS_FACTOR: 5.
+  LOC_LOSS_FACTOR: 1.
+  OFFSETS_LOSS_FACTOR: 0.1
+  BONE_LOSS_FACTOR: 0.5
+MODEL:
+  SPEC:
+    FINAL_CONV_KERNEL: 1
+    PRETRAINED_LAYERS: ['*']
+    STAGES:
+      NUM_STAGES: 3
+      NUM_MODULES: 
+      - 1
+      - 4
+      - 3
+      NUM_BRANCHES: 
+      - 2
+      - 3
+      - 4
+      BLOCK: 
+      - BASIC
+      - BASIC
+      - BASIC
+      NUM_BLOCKS:
+      - [4, 4]
+      - [4, 4, 4]
+      - [4, 4, 4, 4]
+      NUM_CHANNELS:
+      - [32, 64]
+      - [32, 64, 128]
+      - [32, 64, 128, 256]
+      FUSE_METHOD: 
+      - SUM
+      - SUM
+      - SUM
+    HEAD_HEATMAP:
+      BLOCK: BASIC
+      NUM_BLOCKS: 1
+      NUM_CHANNELS: 64
+      DILATION_RATE: 1
+    HEAD_BONE:
+      BLOCK: BASIC
+      NUM_BLOCKS: 2
+      NUM_CHANNELS: 32
+      DILATION_RATE: 1
+      NUM_BONES: 8
+    HEAD_OFFSET:
+      BLOCK: ADAPTIVE
+      NUM_BLOCKS: 2
+      NUM_CHANNELS_PERKPT: 15
+      DILATION_RATE: 1
+    ATTENTION_HEAD:
+      NUM_KP: 17
+      NUM_PEOPLE: 30
+      OUT_CHANNELS: 64
+      MERGE: True
+      BIAS: True
+      BETA: 0.5
+      EMBEDDING_CNN:
+        IN_CHANNELS: 480
+        HIDDEN_CHANNELS: 128
+        OUT_CHANNELS: 128
+        NUM_BLOCKS: 3
+      CE_EMBEDDING_CNN:
+        IN_CHANNELS: 480
+        HIDDEN_CHANNELS: 128
+        OUT_CHANNELS: 128
+        NUM_BLOCKS: 4
+      TRANS:
+        num_layers: 3
+        skip_conns: True
+        layer_cfg:
+          d_model: 128
+          nhead: 4
+          dim_feedforward: 512
+          dropout: 0.1
+          activation: relu
+          normalize_before: False
+        
+  GET_LOC:
+  # centergroup是512：5, 2
+  # 我们是128：3, 1 不太适合密集寻找
+    NMS_KERNEL: 5
+    NMS_PADDING: 2
+    TOP_K: 8
+    HEATMAP_SIZE: 128
+
+      
+  INIT_WEIGHTS: True
+  NAME: hrnet_dekr
+  NUM_JOINTS: 17
+  PRETRAINED: 'models/imagenet_backbone/hrnet_w32-36af842e.pth'
+TEST:
+  nms_sigma: 50
+  nms_heat_th: 0.2
+  FLIP_TEST: True
+  IMAGES_PER_GPU: 1
+  MODEL_FILE: '' 
+  SCALE_FACTOR: [1]
+  NMS_THRE: 0.05
+  NMS_NUM_THRE: 5
+  KEYPOINT_THRESHOLD: 0.01
+  ADJUST_THRESHOLD: 0.05
+  MAX_ABSORB_DISTANCE: 75
+  GUASSIAN_KERNEL: 6
+  DECREASE: 0.9
+RESCORE:
+  VALID: False
+  MODEL_FILE: 'model/rescore/final_rescore_coco_kpt.pth'
+TRAIN:
+  BEGIN_EPOCH: 0
+  CHECKPOINT: ''
+  END_EPOCH: 140
+  GAMMA1: 0.99
+  GAMMA2: 0.0
+  IMAGES_PER_GPU: 14
+  LR: 0.001
+  DEKR_LR: 0.001
+  LR_FACTOR: 0.1
+  LR_STEP: [90, 120]
+  MAX_EPOCHS: 140
+  MOMENTUM: 0.9
+  NESTEROV: False
+  OPTIMIZER: Adam
+  RESUME: False
+  SHUFFLE: True
+  WD: 0.0001
+  CKPT_VAL: 5
+  warmup:
+    warmup_iters: 2000
+    warmup_ratio: 0.001
+WORKERS: 8
+CHECK_TENSOR: 0
+IFTRAIN: True
+# Train para
+IFPRETRAINED: False
+IFFREEZE: False
+# IFTRAIN must be false
+IFTESTBASE: False
+
