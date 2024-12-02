@@ -10,16 +10,9 @@ from __future__ import division
 from __future__ import print_function
 
 import argparse
-from cgitb import enable
-from gc import callbacks
 import os
-import pprint
-import shutil
-import warnings
 import sys
-
-sys.path.append('/data/jupyter/DEKR-refine/lib/models')
-sys.path.append('/data/jupyter/DEKR-refine/')
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import torch
 import torch.nn.parallel
@@ -53,7 +46,8 @@ def parse_args():
 
     # distributed training
     parser.add_argument('--gpu',
-                        help='gpu id for multiprocessing training',
+                        help='gpu id for multiprocessing training, e.g. --gpu 0,1,2, default: 0',
+                        default='0',
                         type=str)
     parser.add_argument('--world-size',
                         default=1,
@@ -87,6 +81,7 @@ def parse_args():
 
 def main():
     args = parse_args()
+    gpu_used = eval('[' + args.gpu + ']')
     update_config(cfg, args)
     cfg.defrost()
     cfg.RANK = args.rank
@@ -117,7 +112,7 @@ def main():
             every_n_epochs=cfg.TRAIN.CKPT_VAL,
         )
         trainer = pl.Trainer(
-            gpus=[2,3], # gpu id
+            gpus=gpu_used, # gpu id. e.g. [0] [0,1], -1 for all
             strategy=DDPStrategy(find_unused_parameters=False),
             gradient_clip_val=1,
             # num_sanity_val_steps=10,

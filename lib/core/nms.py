@@ -14,7 +14,6 @@ from dis import dis
 import torch
 import numpy as np
 from einops import repeat, rearrange
-from visual import *
 
 def get_heat_value(pose_coord, heatmap):
     _, h, w = heatmap.shape

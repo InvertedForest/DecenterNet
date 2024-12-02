@@ -23,7 +23,7 @@ DATASET:
   MAX_TRANSLATE: 40
   MIN_SCALE: 0.75
   NUM_JOINTS: 14
-  ROOT: 'data/CrowdPose'
+  ROOT: 'data/crowdpose'
   TEST: test
   TRAIN: trainval
   OFFSET_RADIUS: 2

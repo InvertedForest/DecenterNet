@@ -15,8 +15,6 @@ from lib.utils.transforms import get_final_preds
 from lib.utils.transforms import get_multi_scale_size
 from .get_loc import get_loc, get_loc, get_locations
 from lib.core.loss import MultiLossFactory
-import numpy as np
-from visual import *
 import sys
 import os
 from mmpose.apis.test import collect_results_gpu

@@ -7,18 +7,27 @@ This is the official repository for our paper: DecenterNet: Delving into Multi-p
 1. Clone this repo, and we'll call the directory that you cloned as ${POSE_ROOT}.
 2. Install dependencies:
    ```
+   conda create -n dece python=3.8 -y # 3.8 is necessary for CrowPose-api
+   conda activate dece
+   pip install pip==24.0
    pip install -r requirements.txt
+   conda install pytorch==1.10.1 torchvision==0.11.2 cudatoolkit=11.3 -c pytorch -c conda-forge
+   python -c "import torch;print(torch.cuda.is_available())" 
+   # if False: refer to (https://pytorch.org/get-started/previous-versions/#v1101)
    ```
 3. Install [COCOAPI](https://github.com/cocodataset/cocoapi):
    ```
-   # COCOAPI=/path/to/clone/cocoapi
-   git clone https://github.com/cocodataset/cocoapi.git $COCOAPI
-   cd $COCOAPI/PythonAPI
-   # Install into global site-packages
+   git clone https://github.com/cocodataset/cocoapi.git
+   cd cocoapi/PythonAPI
    make install
    ```
+4. Install [CrowdPoseAPI](https://github.com/Jeff-sjtu/CrowdPose):
+   ```
+   git clone https://github.com/Jeff-sjtu/CrowdPose.git
+   cd CrowdPose/crowdpose-api/PythonAPI
+   sh install.sh
+   ```
 
-4. Install [CrowdPoseAPI](https://github.com/Jeff-sjtu/CrowdPose) exactly the same as COCOAPI.  
 
 ## 3. Data preparation
 **For COCO data**, please download from [COCO download](http://cocodataset.org/#download), 2017 Train/Val is needed for COCO keypoints training and validation. 
@@ -73,10 +82,10 @@ python tools/launch.py  --cfg experiments/coco/w32/w32_4x_reg03_bs10_512_adam_lr
 ```
 python tools/launch.py  --cfg experiments/crowdpose/w32/w32_4x_reg03_bs10_512_adam_lr1e-3_crowdpose_x300.yaml --versionid 0 --train 0 --model_path 'models/pretrained_models/crowd_w32/epoch=269-step=29160.ckpt'
 ```
-#### Training on COCO val2017 dataset
+#### Training on COCO dataset
 
 ```
-python tools/launch.py  --cfg experiments/coco/w32/w32_4x_reg03_bs10_512_adam_lr1e-3_coco_x140.yaml --versionid 0 --train 1
+python tools/launch.py  --cfg experiments/coco/w32/w32_4x_reg03_bs10_512_adam_lr1e-3_coco_x140.yaml --versionid 0 --train 1 --gpu 0,1
 ```
 
 ### Other content will come soon...

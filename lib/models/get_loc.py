@@ -9,7 +9,6 @@ from lib.utils.transforms import resize_align_multi_scale
 from lib.utils.transforms import get_final_preds
 from lib.utils.transforms import get_multi_scale_size
 from lib.utils.rescore import rescore_valid
-from visual import *
 import torch
 import torch.nn.functional as F
 from einops import rearrange, reduce, repeat

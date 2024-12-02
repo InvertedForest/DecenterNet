@@ -87,7 +87,7 @@ class MultiLossFactory(nn.Module):
         
     def forward(self, pheatmap, poffset, heatmap, mask, offset, offset_w, pbone, bone, bone_w, loc_map):
         
-        heatmap_loss = self.heatmap_loss(pheatmap, heatmap, mask[:, :self.num_joints])
+        heatmap_loss = self.heatmap_loss(pheatmap, heatmap, mask[:, :2*self.num_joints])
         heatmap_loss = heatmap_loss * self.heatmap_loss_factor
     
         offset_loss = self.offset_loss(poffset, offset, offset_w, loc_map, self.num_joints)
@@ -96,7 +96,7 @@ class MultiLossFactory(nn.Module):
         bone_loss = self.bone_loss(pbone, bone, bone_w)
         bone_loss = bone_loss * self.bone_loss_factor
         # 选点
-        loc_loss = self.loc_loss(loc_map, mask[:, self.num_joints:])
+        loc_loss = self.loc_loss(loc_map, mask[:, 2*self.num_joints:])
         loc_loss = loc_loss * self.loc_loss_factor
 
         return heatmap_loss, offset_loss, bone_loss, loc_loss

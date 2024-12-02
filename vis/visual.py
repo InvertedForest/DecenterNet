@@ -5,7 +5,6 @@ import torchvision
 import cv2
 import matplotlib.pyplot as plt
 ttt = torchvision.transforms.ToPILImage()
-from visual import *
 
 cmp='rainbow'
 interpolation=None

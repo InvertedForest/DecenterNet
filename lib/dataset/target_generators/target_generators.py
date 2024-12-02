@@ -196,7 +196,7 @@ class BoneGenerator():
                     for it in range(interval):
                         k = it/interval
                         point = k*points[0] + (1-k)*points[1]
-                        point = (point+0.5).astype(np.int)
+                        point = (point+0.5).astype(np.int32)
                         if point.min() < 0 or point.max() > self.output_h - 1:
                             continue
                         if (bone_map[2*b_idx:2*(b_idx+1), point[1], point[0]] == 0).all():
